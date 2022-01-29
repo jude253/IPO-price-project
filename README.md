@@ -6,7 +6,7 @@ browser with data from finnhub.io, you will need to sign up for a free account t
 index.html](https://github.com/jude253/IPO-price-project/blob/35a682ac35391b75df423b83a29afd7d34910558/index.html#L27).
 
 
-## Note on data sourcing
+## Note on Data Sourcing
 This webpage is in its infancy, and because of the API limit of 60 requests/minute and the fact that there are 200+ IPOs in a 
 year, I believe the best way to populate this page will be to have an SQL database that updates the data for all IPOs in 
 the past 5 years once a day or month at a rate of around 60 companies per minute, then we can query that data from this webpage

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <h2>IPO Data</h2>
+
+    <label for='start'>Start date:</label>
+    <input type='date' id='start' name='data-start'
+        value='2020-01-01'
+        min='2018-01-01' max='2022-12-31'>
+    
+    <label for='end'>End date:</label>
+    <input type='date' id='end' name='data-end'
+        value='2021-01-01'
+        min='2018-01-01' max='2022-12-31'>
+
+    <p id='demo'>Choose Date Range for IPO Data</p>
+    <button type='button' onclick='myFunction()'>Try it</button>
+
+    <div id='dvTable'></div>
+</body>
+</html>
+
+<script>
+    // store api token as global key for development
+    var finnhubToken = 'getKey'
+    const callAPI = async () => {
+            // make api call then generate table after response received
+            const response = await fetch(buildAPIURL())
+            const myJson = await response.json() //extract JSON from the http response
+            GenerateTable(myJson)
+        }   
+
+    function myFunction() {
+        // perform button click
+        document.getElementById('demo').innerHTML = 'IPO Data Retrieved.'
+        callAPI()
+    }
+
+    function buildAPIURL() {
+        //create finnhub API call url
+        let api_url = 'https://finnhub.io/api/v1/calendar/ipo'
+        api_url = api_url + '?from=' + document.getElementById('start').value
+        api_url = api_url + '&to=' + document.getElementById('end').value
+        api_url = api_url + '&token=' + finnhubToken
+        return api_url
+    }
+</script>
+
+<script type='text/javascript'>
+    function GenerateTable(jsonResponse) {
+        //Build an array containing of column names
+        let columnNames = ['date', 'exchange', 'name', 'numberOfShares', 'price', 'status', 'symbol', 'totalSharesValue']
+
+        // Remove old table if there is one
+        var elem = document.getElementById('DynamicTable')
+        if (elem) { elem.remove() }
+            
+        //Create a HTML Table element.
+        var table = document.createElement('TABLE')
+        table.border = '1'
+        table.id = 'DynamicTable'
+ 
+        //Get the count of columns.
+        var columnCount = columnNames.length
+ 
+        //Add the header row.
+        var row = table.insertRow(-1)
+        for (var i = 0; i < columnCount; i++) {
+            var headerCell = document.createElement('TH')
+            headerCell.innerHTML = columnNames[i]
+            row.appendChild(headerCell)
+        }
+        
+        //Add the data rows.
+        for (var i = 1; i < jsonResponse['ipoCalendar'].length; i++) {
+            row = table.insertRow(-1)
+            for (var j = 0; j < columnCount; j++) {
+                var cell = row.insertCell(-1)
+                cell.innerHTML = jsonResponse['ipoCalendar'][i][columnNames[j]]
+            }
+        }
+        
+        // Insert table into doc as child of dvTable
+        var dvTable = document.getElementById('dvTable')
+        dvTable.innerHTML = ''
+        dvTable.appendChild(table)
+    }
+
+</script>
